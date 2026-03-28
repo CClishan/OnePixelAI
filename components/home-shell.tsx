@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import { useEffect, useMemo, useState } from "react";
 import type { SiteConfig, ToolItem } from "@/lib/site-data";
 import styles from "./home-shell.module.css";
@@ -10,7 +11,7 @@ type HomeShellProps = {
   tools: ToolItem[];
 };
 
-type FilterKey = "all" | "tool" | "in-progress";
+type FilterKey = "all" | "tool" | "skill" | "in-progress";
 
 declare global {
   interface Window {
@@ -21,6 +22,7 @@ declare global {
 const filters: Array<{ key: FilterKey; label: string }> = [
   { key: "all", label: "All" },
   { key: "tool", label: "Tool" },
+  { key: "skill", label: "Skills" },
   { key: "in-progress", label: "In Progress" },
 ];
 
@@ -39,6 +41,7 @@ function rowTone(status: ToolItem["status"]) {
 export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
   const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
   const [openId, setOpenId] = useState<string | null>(null);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     const shouldBoot =
@@ -46,16 +49,37 @@ export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
       Boolean(window.__ONEPIXELAI_BOOT__);
 
     if (!shouldBoot) {
-      return;
+      const frame = window.requestAnimationFrame(() => setIsReady(true));
+
+      return () => window.cancelAnimationFrame(frame);
     }
 
     const timer = window.setTimeout(() => {
       document.documentElement.classList.remove("boot-pending");
       window.__ONEPIXELAI_BOOT__ = false;
+      setIsReady(true);
     }, 1080);
 
     return () => window.clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (!isReady) {
+      return;
+    }
+
+    const onPointerMove = (event: PointerEvent) => {
+      const x = (event.clientX / window.innerWidth - 0.5) * 2;
+      const y = (event.clientY / window.innerHeight - 0.5) * 2;
+
+      document.documentElement.style.setProperty("--pointer-x", x.toFixed(3));
+      document.documentElement.style.setProperty("--pointer-y", y.toFixed(3));
+    };
+
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
+
+    return () => window.removeEventListener("pointermove", onPointerMove);
+  }, [isReady]);
 
   const filteredTools = useMemo(
     () => filterTools(tools, activeFilter),
@@ -66,6 +90,12 @@ export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
 
   return (
     <div className={styles.page}>
+      <div className={styles.atmosphere} aria-hidden="true">
+        <span className={`${styles.pigment} ${styles.pigmentBlue}`} />
+        <span className={`${styles.pigment} ${styles.pigmentRed}`} />
+        <span className={`${styles.pigment} ${styles.pigmentGold}`} />
+      </div>
+
       <div className={styles.bootScreen} data-boot-screen>
         <span className={styles.bootLabel}>Loading site...</span>
       </div>
@@ -75,7 +105,10 @@ export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
         <span className={styles.tickerDot} />
       </aside>
 
-      <main className={styles.main} data-shell-content>
+      <main
+        className={`${styles.main} ${isReady ? styles.mainReady : ""}`}
+        data-shell-content
+      >
         <header className={styles.header}>
           <div className={styles.heroLine}>
             <h1 className={styles.heroTitle}>{siteConfig.heroTitle}</h1>
@@ -152,7 +185,11 @@ export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
               const tone = rowTone(tool.status);
 
               return (
-                <div key={tool.id} className={styles.projectWrap}>
+                <div
+                  key={tool.id}
+                  className={styles.projectWrap}
+                  style={{ "--enter-delay": `${0.28 + index * 0.06}s` } as CSSProperties}
+                >
                   <div
                     className={styles.projectRow}
                     data-tone={tone}

@@ -12,7 +12,7 @@ export type ToolImage = {
 export type ToolItem = {
   id: string;
   name: string;
-  type: "tool";
+  type: "tool" | "skill";
   status: "live" | "coming-soon";
   description: string;
   href?: string;
@@ -118,6 +118,56 @@ export const tools: ToolItem[] = [
         alt: "PixelSmall screenshot",
         label: "Live screenshot",
       },
+    ],
+  },
+  {
+    id: "impeccable",
+    name: "Impeccable",
+    type: "skill",
+    status: "live",
+    description: "面向 AI coding 工具的设计增强 Skill，补足前端设计语言与命令体系。",
+    href: "https://impeccable.style/",
+    tags: ["skill"],
+    typeLabel: "Skill",
+    actionLabel: "Open",
+    availability: "Available now",
+    detailText: [
+      "Impeccable 是一个给 AI harness 使用的设计增强 Skill，核心价值是把更专业的设计词汇、命令和反模式整理成可直接调用的技能包。",
+      "它更适合希望提升页面审美、排版和前端设计表达的人，而不是单纯追求快速生成默认 UI 的工作流。",
+    ],
+    useCases: [
+      "给 AI 生成前端时补充更专业的设计语言",
+      "用成体系的命令改善排版、布局和视觉细节",
+      "减少常见的 AI 前端“模板味”和通用感",
+    ],
+    roadmap: [
+      "后续可加入 OnePixelAI 自己整理的 Skill 推荐区",
+      "可扩展为带笔记、分类和标签的 Skill 索引",
+    ],
+  },
+  {
+    id: "taste-skill",
+    name: "Taste Skill",
+    type: "skill",
+    status: "live",
+    description: "强调 anti-slop frontend 的 Skill / framework，主打更有判断力的界面生成。",
+    href: "https://www.tasteskill.dev/",
+    tags: ["skill"],
+    typeLabel: "Skill",
+    actionLabel: "Open",
+    availability: "Available now",
+    detailText: [
+      "Taste Skill 主张用更高要求去约束 AI 前端输出，重点强调布局、间距、交互和整体质感，避免生成千篇一律的安全方案。",
+      "它更像一套带立场的前端审美框架，适合想把 AI 结果从“能用”推到“更有品味”的工作方式。",
+    ],
+    useCases: [
+      "约束 AI 避开常见的前端 slop 风格",
+      "提升 landing page 和 showcase 页面完成度",
+      "为个人工具站建立更有辨识度的视觉标准",
+    ],
+    roadmap: [
+      "后续可继续补充更多高质量 Skill 作为公开分享",
+      "可与工具索引并列，形成 OnePixelAI 的 Skill 推荐栏目",
     ],
   },
   {

@@ -8,6 +8,8 @@
   --blue: #0055ff;
   --blue-dim: #d8e4ff;
   --shadow: rgba(17, 17, 16, 0.06);
+  --pointer-x: 0;
+  --pointer-y: 0;
 }
 
 html {
