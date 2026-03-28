@@ -1,0 +1,19 @@
+<svg width="960" height="960" viewBox="0 0 960 960" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="960" height="960" fill="#F7F4EE"/>
+  <rect x="92" y="92" width="776" height="776" rx="16" fill="#FFFFFF" stroke="#E4E1DA" stroke-width="4"/>
+  <rect x="132" y="140" width="696" height="56" fill="#F4F2EC"/>
+  <rect x="132" y="140" width="226" height="56" fill="#DCE7FF"/>
+  <rect x="132" y="242" width="300" height="256" rx="12" fill="#EAF0FF" stroke="#D8E4FF" stroke-width="4"/>
+  <path d="M236 324H328V416H236V324Z" fill="#0055FF"/>
+  <circle cx="282" cy="370" r="80" stroke="#FFFFFF" stroke-width="20"/>
+  <rect x="474" y="256" width="278" height="28" fill="#161616"/>
+  <rect x="474" y="312" width="214" height="16" fill="#9D988F"/>
+  <rect x="474" y="348" width="238" height="16" fill="#9D988F"/>
+  <rect x="474" y="406" width="140" height="38" rx="8" fill="#DCE7FF" stroke="#0055FF" stroke-width="4"/>
+  <rect x="132" y="548" width="620" height="1" fill="#E4E1DA"/>
+  <rect x="132" y="604" width="268" height="18" fill="#161616"/>
+  <rect x="132" y="646" width="566" height="14" fill="#9D988F"/>
+  <rect x="132" y="680" width="520" height="14" fill="#9D988F"/>
+  <rect x="132" y="774" width="144" height="44" rx="10" fill="#0055FF"/>
+  <text x="176" y="801" fill="white" font-family="monospace" font-size="24">OPEN</text>
+</svg>

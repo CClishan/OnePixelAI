@@ -1,0 +1,81 @@
+:root {
+  --bg: #f8f7f4;
+  --surface: #ffffff;
+  --surface-soft: #f3f2ee;
+  --ink: #111110;
+  --muted: #98958f;
+  --rule: #e4e1da;
+  --blue: #0055ff;
+  --blue-dim: #d8e4ff;
+  --shadow: rgba(17, 17, 16, 0.06);
+}
+
+html {
+  min-height: 100%;
+  font-size: 16px;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-display), "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body,
+button,
+input,
+textarea,
+select {
+  color: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  background: none;
+  border: 0;
+  font: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+html.boot-pending body {
+  overflow: hidden;
+}
+
+html.boot-pending [data-shell-content] {
+  opacity: 0;
+  visibility: hidden;
+}
+
+html.boot-pending [data-boot-screen] {
+  opacity: 1;
+  visibility: visible;
+}
