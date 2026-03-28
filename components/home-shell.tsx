@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import type { CSSProperties } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { SiteConfig, ToolItem } from "@/lib/site-data";
 import styles from "./home-shell.module.css";
 
@@ -42,6 +42,15 @@ export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
   const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
   const [openId, setOpenId] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
+  const [animationCycle, setAnimationCycle] = useState(0);
+  const [indicatorStyle, setIndicatorStyle] = useState<CSSProperties>({});
+  const navRef = useRef<HTMLElement | null>(null);
+  const filterRefs = useRef<Record<FilterKey, HTMLButtonElement | null>>({
+    all: null,
+    tool: null,
+    skill: null,
+    "in-progress": null,
+  });
 
   useEffect(() => {
     const shouldBoot =
@@ -81,12 +90,71 @@ export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
     return () => window.removeEventListener("pointermove", onPointerMove);
   }, [isReady]);
 
-  const filteredTools = useMemo(
-    () => filterTools(tools, activeFilter),
-    [activeFilter, tools],
+  useEffect(() => {
+    const updateIndicator = () => {
+      const nav = navRef.current;
+      const activeButton = filterRefs.current[activeFilter];
+
+      if (!nav || !activeButton) {
+        return;
+      }
+
+      const navRect = nav.getBoundingClientRect();
+      const buttonRect = activeButton.getBoundingClientRect();
+      const x = buttonRect.left - navRect.left + 16;
+      const width = Math.max(0, buttonRect.width - 32);
+
+      setIndicatorStyle({
+        width: `${width}px`,
+        transform: `translateX(${x}px)`,
+      });
+    };
+
+    const frame = window.requestAnimationFrame(updateIndicator);
+    window.addEventListener("resize", updateIndicator);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", updateIndicator);
+    };
+  }, [activeFilter, isReady]);
+
+  const toolsByFilter = useMemo<Record<FilterKey, ToolItem[]>>(
+    () => ({
+      all: tools,
+      tool: filterTools(tools, "tool"),
+      skill: filterTools(tools, "skill"),
+      "in-progress": filterTools(tools, "in-progress"),
+    }),
+    [tools],
   );
 
-  const allCount = tools.length;
+  const filteredTools = toolsByFilter[activeFilter];
+  const filterCounts = useMemo<Record<FilterKey, number>>(
+    () => ({
+      all: toolsByFilter.all.length,
+      tool: toolsByFilter.tool.length,
+      skill: toolsByFilter.skill.length,
+      "in-progress": toolsByFilter["in-progress"].length,
+    }),
+    [toolsByFilter],
+  );
+
+  const listDelayBase = animationCycle === 0 ? 0.28 : 0.08;
+
+  const toggleOpenId = (toolId: string) => {
+    setOpenId((current) => (current === toolId ? null : toolId));
+  };
+
+  const handleFilterChange = (nextFilter: FilterKey) => {
+    if (nextFilter === activeFilter) {
+      return;
+    }
+
+    setAnimationCycle((value) => value + 1);
+    setOpenId(null);
+    setActiveFilter(nextFilter);
+  };
 
   return (
     <div className={styles.page}>
@@ -131,38 +199,30 @@ export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
           </div>
         </header>
 
-        <nav className={styles.filterNav} aria-label="Tool filters">
+        <nav ref={navRef} className={styles.filterNav} aria-label="Tool filters">
+          <span
+            className={styles.filterIndicator}
+            style={indicatorStyle}
+            aria-hidden="true"
+          />
           {filters.map((filter) => {
-            const count =
-              filter.key === "all"
-                ? allCount
-                : filterTools(tools, filter.key).length;
-
             return (
               <button
                 key={filter.key}
                 type="button"
+                ref={(element) => {
+                  filterRefs.current[filter.key] = element;
+                }}
                 className={`${styles.filterButton} ${
                   activeFilter === filter.key ? styles.filterButtonActive : ""
                 }`}
-                onClick={() => {
-                  setActiveFilter(filter.key);
-
-                  if (!openId) {
-                    return;
-                  }
-
-                  const nextVisible = filterTools(tools, filter.key);
-                  const stillVisible = nextVisible.some((tool) => tool.id === openId);
-
-                  if (!stillVisible) {
-                    setOpenId(null);
-                  }
-                }}
+                onClick={() => handleFilterChange(filter.key)}
               >
                 {filter.label}
                 {filter.key === "all" ? (
-                  <span className={styles.countPill}>{count}</span>
+                  <span className={styles.countPill}>
+                    {filterCounts[filter.key]}
+                  </span>
                 ) : null}
               </button>
             );
@@ -179,7 +239,10 @@ export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
             </span>
           </div>
 
-          <div className={styles.projectsList}>
+          <div
+            key={`${activeFilter}-${animationCycle}`}
+            className={styles.projectsList}
+          >
             {filteredTools.map((tool, index) => {
               const isOpen = openId === tool.id;
               const tone = rowTone(tool.status);
@@ -188,7 +251,11 @@ export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
                 <div
                   key={tool.id}
                   className={styles.projectWrap}
-                  style={{ "--enter-delay": `${0.28 + index * 0.06}s` } as CSSProperties}
+                  style={
+                    {
+                      "--enter-delay": `${listDelayBase + index * 0.06}s`,
+                    } as CSSProperties
+                  }
                 >
                   <div
                     className={styles.projectRow}
@@ -196,11 +263,11 @@ export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
                     role="button"
                     tabIndex={0}
                     aria-expanded={isOpen}
-                    onClick={() => setOpenId(isOpen ? null : tool.id)}
+                    onClick={() => toggleOpenId(tool.id)}
                     onKeyDown={(event) => {
                       if (event.key === "Enter" || event.key === " ") {
                         event.preventDefault();
-                        setOpenId(isOpen ? null : tool.id);
+                        toggleOpenId(tool.id);
                       }
                     }}
                   >

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fira_Code, Syne } from "next/font/google";
 import Script from "next/script";
+import { siteConfig } from "@/lib/site-data";
 import "./globals.css";
 
 const syne = Syne({
@@ -14,8 +15,9 @@ const firaCode = Fira_Code({
 });
 
 export const metadata: Metadata = {
-  title: "OnePixelAI — Tools",
-  description: "OnePixelAI 的工具入口页，聚合图片工具、设计实验与 AI 制作项目。",
+  title: `${siteConfig.siteName} - Tools`,
+  description:
+    "OnePixelAI 的个人工具与 Skill 入口页，聚合图片工具、设计实验与 AI 制作项目。",
 };
 
 const bootScript = `

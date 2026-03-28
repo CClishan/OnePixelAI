@@ -29,7 +29,7 @@
   mix-blend-mode: multiply;
   filter: blur(38px);
   opacity: 0.22;
-  transition: transform 1.2s cubic-bezier(0.45, 0, 0.55, 1);
+  transition: transform 1.4s cubic-bezier(0.45, 0, 0.55, 1);
 }
 
 .pigmentBlue {
@@ -69,7 +69,7 @@
   background: var(--bg);
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.28s ease;
+  transition: opacity 0.33s ease;
 }
 
 .bootLabel {
@@ -137,23 +137,23 @@
 }
 
 .mainReady .header {
-  animation: revealUp 0.8s forwards cubic-bezier(0.45, 0, 0.55, 1);
+  animation: revealUp 0.94s forwards cubic-bezier(0.45, 0, 0.55, 1);
 }
 
 .mainReady .filterNav {
-  animation: revealUp 0.8s 0.08s forwards cubic-bezier(0.45, 0, 0.55, 1);
+  animation: revealUp 0.94s 0.09s forwards cubic-bezier(0.45, 0, 0.55, 1);
 }
 
 .mainReady .tableHead {
-  animation: revealUp 0.8s 0.16s forwards cubic-bezier(0.45, 0, 0.55, 1);
+  animation: revealUp 0.94s 0.18s forwards cubic-bezier(0.45, 0, 0.55, 1);
 }
 
 .mainReady .footer {
-  animation: revealUp 0.8s 0.48s forwards cubic-bezier(0.45, 0, 0.55, 1);
+  animation: revealUp 0.94s 0.56s forwards cubic-bezier(0.45, 0, 0.55, 1);
 }
 
 .mainReady .projectWrap {
-  animation: revealUp 0.75s var(--enter-delay, 0.22s) forwards
+  animation: rowListIn 0.61s var(--enter-delay, 0.22s) forwards
     cubic-bezier(0.45, 0, 0.55, 1);
 }
 
@@ -181,13 +181,6 @@
   line-height: 1.02;
   letter-spacing: -0.05em;
   font-weight: 800;
-  transition: letter-spacing 0.45s cubic-bezier(0.45, 0, 0.55, 1),
-    transform 0.45s cubic-bezier(0.45, 0, 0.55, 1);
-}
-
-.header:hover .heroTitle {
-  letter-spacing: -0.065em;
-  transform: translateY(-1px);
 }
 
 .headerMeta {
@@ -217,8 +210,8 @@
 .headerLinks a {
   position: relative;
   transition:
-    color 0.18s ease,
-    transform 0.18s ease;
+    color 0.21s ease,
+    transform 0.21s ease;
 }
 
 .headerLinks a::after {
@@ -231,7 +224,7 @@
   background: currentColor;
   transform: scaleX(0);
   transform-origin: left center;
-  transition: transform 0.24s cubic-bezier(0.45, 0, 0.55, 1);
+  transition: transform 0.28s cubic-bezier(0.45, 0, 0.55, 1);
 }
 
 .headerLinks a:hover {
@@ -244,6 +237,7 @@
 }
 
 .filterNav {
+  position: relative;
   display: flex;
   align-items: center;
   height: 3rem;
@@ -255,6 +249,20 @@
 
 .filterNav::-webkit-scrollbar {
   display: none;
+}
+
+.filterIndicator {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--blue);
+  transform: translateX(16px);
+  transition:
+    transform 0.4s cubic-bezier(0.45, 0, 0.55, 1),
+    width 0.4s cubic-bezier(0.45, 0, 0.55, 1),
+    opacity 0.24s ease;
+  will-change: transform, width;
 }
 
 .filterButton {
@@ -269,21 +277,25 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   transition:
-    color 0.15s ease,
-    transform 0.2s ease;
+    color 0.28s ease 0.03s,
+    transform 0.24s ease;
 }
 
-.filterButton::after {
+.filterButton::before {
   content: "";
   position: absolute;
   left: 1rem;
   right: 1rem;
-  bottom: 0;
-  height: 2px;
-  background: var(--blue);
-  transform: scaleX(0);
-  transform-origin: center;
-  transition: transform 0.2s ease;
+  top: 50%;
+  height: 1.6rem;
+  border-radius: 999px;
+  background: rgba(0, 85, 255, 0.045);
+  opacity: 0;
+  transform: translateY(-50%) scale(0.92);
+  transition:
+    opacity 0.21s ease,
+    transform 0.33s cubic-bezier(0.45, 0, 0.55, 1);
+  pointer-events: none;
 }
 
 .filterButton:hover,
@@ -292,14 +304,24 @@
   transform: translateY(-1px);
 }
 
-.filterButtonActive::after {
-  transform: scaleX(1);
+.filterButton:hover::before {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
 }
 
 .countPill {
   margin-left: 0.28rem;
   font-size: 0.58rem;
   opacity: 0.5;
+  transition:
+    opacity 0.28s ease 0.07s,
+    transform 0.28s ease 0.07s;
+}
+
+.filterButton:hover .countPill,
+.filterButtonActive .countPill {
+  opacity: 0.85;
+  transform: translateX(1px);
 }
 
 .worksView {
@@ -346,9 +368,9 @@
   border-bottom: 1px solid var(--rule);
   cursor: pointer;
   transition:
-    background 0.18s ease,
-    box-shadow 0.24s ease,
-    transform 0.24s ease;
+    background 0.21s ease,
+    box-shadow 0.28s ease,
+    transform 0.28s ease;
 }
 
 .projectRow::before {
@@ -360,7 +382,7 @@
   width: 3px;
   transform: scaleY(0);
   transform-origin: bottom;
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .projectRow[data-tone="live"]:hover {
@@ -416,8 +438,8 @@
   letter-spacing: -0.02em;
   font-weight: 700;
   transition:
-    letter-spacing 0.34s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.34s cubic-bezier(0.16, 1, 0.3, 1);
+    letter-spacing 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .projectRow:hover .rowTitle {
@@ -452,23 +474,27 @@
   justify-content: center;
 }
 
-.rowTag {
+.rowTag,
+.action {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-width: 5.15rem;
   min-height: 1.85rem;
   padding: 0.28rem 0.68rem;
-  border: 1px solid var(--rule);
   font-size: 0.6rem;
-  letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.rowTag {
+  border: 1px solid var(--rule);
+  letter-spacing: 0.12em;
   color: var(--muted);
   transition:
-    border-color 0.16s ease,
-    background 0.16s ease,
-    color 0.16s ease,
-    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+    border-color 0.19s ease,
+    background 0.19s ease,
+    color 0.19s ease,
+    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .projectRow[data-tone="live"]:hover .rowTag {
@@ -495,25 +521,18 @@
 }
 
 .action {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 5.15rem;
-  min-height: 1.85rem;
-  padding: 0.28rem 0.68rem;
   border: 1px solid transparent;
   font-size: 0.6rem;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
   white-space: nowrap;
   color: var(--muted);
   background: transparent;
   transition:
-    color 0.15s ease,
-    background 0.15s ease,
-    border-color 0.15s ease,
-    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.24s ease;
+    color 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.28s ease;
 }
 
 .action:hover {
@@ -564,7 +583,7 @@
 }
 
 .detailPanelOpen .detailGrid {
-  animation: detailReveal 0.42s forwards cubic-bezier(0.45, 0, 0.55, 1);
+  animation: detailReveal 0.49s forwards cubic-bezier(0.45, 0, 0.55, 1);
 }
 
 .detailMain {
@@ -679,8 +698,8 @@
   border: 1px solid var(--rule);
   background: #f5f4f0;
   transition:
-    transform 0.5s cubic-bezier(0.45, 0, 0.55, 1),
-    filter 0.3s ease;
+    transform 0.58s cubic-bezier(0.45, 0, 0.55, 1),
+    filter 0.35s ease;
 }
 
 .detailImageCard:hover .detailImage {
@@ -716,11 +735,11 @@
   text-transform: uppercase;
   color: var(--ink);
   transition:
-    background 0.15s ease,
-    border-color 0.15s ease,
-    color 0.15s ease,
-    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.24s ease;
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.28s ease;
 }
 
 .detailActionPrimary {
@@ -794,7 +813,9 @@
 .footerTop {
   justify-self: end;
   cursor: pointer;
-  transition: color 0.14s ease;
+  transition:
+    color 0.18s ease,
+    transform 0.18s ease;
 }
 
 .footerTop:hover {
@@ -824,6 +845,18 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes rowListIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
@@ -1015,5 +1048,18 @@
 
   .footer {
     padding: 1.35rem 1rem;
+  }
+
+  .footerTop {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 30;
+    justify-self: auto;
+    padding: 0.6rem 0.85rem;
+    border: 1px solid var(--rule);
+    background: rgba(248, 247, 244, 0.92);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 20px -18px rgba(17, 17, 16, 0.35);
   }
 }
