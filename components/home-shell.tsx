@@ -38,6 +38,35 @@ function rowTone(status: ToolItem["status"]) {
   return status === "coming-soon" ? "progress" : "live";
 }
 
+function renderAction(tool: ToolItem, className: string) {
+  if (tool.downloadHref) {
+    return (
+      <a className={className} href={tool.downloadHref} download>
+        {tool.actionLabel}
+      </a>
+    );
+  }
+
+  if (tool.href) {
+    return (
+      <a
+        className={className}
+        href={tool.href}
+        target="_blank"
+        rel="noreferrer"
+      >
+        {tool.actionLabel}
+      </a>
+    );
+  }
+
+  return (
+    <span className={`${className} ${styles.actionDisabled}`}>
+      {tool.actionLabel}
+    </span>
+  );
+}
+
 export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
   const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
   const [openId, setOpenId] = useState<string | null>(null);
@@ -291,21 +320,13 @@ export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
                       className={styles.rowActionsCell}
                       onClick={(event) => event.stopPropagation()}
                     >
-                      {tool.href ? (
-                        <a
-                          className={`${styles.action} ${styles.actionPrimary}`}
-                          href={tool.href}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          Open
-                        </a>
-                      ) : (
-                        <span
-                          className={`${styles.action} ${styles.actionDisabled}`}
-                        >
-                          {tool.actionLabel}
-                        </span>
+                      {renderAction(
+                        tool,
+                        `${styles.action} ${
+                          tool.href || tool.downloadHref
+                            ? styles.actionPrimary
+                            : ""
+                        }`,
                       )}
                     </div>
                   </div>
@@ -369,7 +390,16 @@ export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
                         ) : null}
 
                         <div className={styles.detailActions}>
-                          {tool.href ? (
+                          {tool.downloadHref ? (
+                            <a
+                              className={`${styles.detailAction} ${styles.detailActionPrimary}`}
+                              href={tool.downloadHref}
+                              download
+                            >
+                              <span>Download file</span>
+                              <span>.md</span>
+                            </a>
+                          ) : tool.href ? (
                             <a
                               className={`${styles.detailAction} ${styles.detailActionPrimary}`}
                               href={tool.href}
@@ -390,7 +420,9 @@ export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
 
                           <div className={styles.statusCard}>
                             <span className={styles.statusLabel}>Status</span>
-                            <strong>{tool.availability}</strong>
+                            <strong>
+                              {tool.detailAvailability ?? tool.availability}
+                            </strong>
                           </div>
                         </div>
                       </aside>
