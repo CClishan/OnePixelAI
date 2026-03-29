@@ -11,7 +11,7 @@ type HomeShellProps = {
   tools: ToolItem[];
 };
 
-type FilterKey = "all" | "tool" | "skill" | "in-progress";
+type FilterKey = "all" | "tool" | "skill" | "experience" | "in-progress";
 
 declare global {
   interface Window {
@@ -23,6 +23,7 @@ const filters: Array<{ key: FilterKey; label: string }> = [
   { key: "all", label: "All" },
   { key: "tool", label: "Tool" },
   { key: "skill", label: "Skills" },
+  { key: "experience", label: "Experience" },
   { key: "in-progress", label: "In Progress" },
 ];
 
@@ -36,6 +37,10 @@ function filterTools(tools: ToolItem[], activeFilter: FilterKey) {
 
 function rowTone(status: ToolItem["status"]) {
   return status === "coming-soon" ? "progress" : "live";
+}
+
+function hasStyleTwoDetail(tool: ToolItem) {
+  return tool.detailStyle === "style-2";
 }
 
 function renderAction(tool: ToolItem, className: string) {
@@ -78,6 +83,7 @@ export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
     all: null,
     tool: null,
     skill: null,
+    experience: null,
     "in-progress": null,
   });
 
@@ -153,6 +159,7 @@ export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
       all: tools,
       tool: filterTools(tools, "tool"),
       skill: filterTools(tools, "skill"),
+      experience: filterTools(tools, "experience"),
       "in-progress": filterTools(tools, "in-progress"),
     }),
     [tools],
@@ -164,6 +171,7 @@ export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
       all: toolsByFilter.all.length,
       tool: toolsByFilter.tool.length,
       skill: toolsByFilter.skill.length,
+      experience: toolsByFilter.experience.length,
       "in-progress": toolsByFilter["in-progress"].length,
     }),
     [toolsByFilter],
@@ -275,6 +283,7 @@ export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
             {filteredTools.map((tool, index) => {
               const isOpen = openId === tool.id;
               const tone = rowTone(tool.status);
+              const isStyleTwo = hasStyleTwoDetail(tool);
 
               return (
                 <div
@@ -336,7 +345,11 @@ export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
                       isOpen ? styles.detailPanelOpen : ""
                     }`}
                   >
-                    <div className={styles.detailGrid}>
+                    <div
+                      className={`${styles.detailGrid} ${
+                        isStyleTwo ? styles.detailGridStyleTwo : ""
+                      }`}
+                    >
                       <div className={styles.detailMain}>
                         <div className={styles.detailIntro}>
                           <span className={styles.detailFlag}>{tool.typeLabel}</span>
@@ -345,19 +358,63 @@ export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
                         </div>
 
                         <div className={styles.detailBody}>
-                          <h3>Overview</h3>
+                          <h3>{isStyleTwo ? "文档概览" : "Overview"}</h3>
                           {tool.detailText.map((paragraph) => (
                             <p key={paragraph}>{paragraph}</p>
                           ))}
 
-                          <h3>Best For</h3>
+                          {tool.detailHighlights?.length ? (
+                            <div className={styles.detailHighlightGrid}>
+                              {tool.detailHighlights.map((item) => (
+                                <article
+                                  key={`${tool.id}-${item.label}`}
+                                  className={styles.detailHighlightCard}
+                                >
+                                  <span className={styles.detailHighlightLabel}>
+                                    {item.label}
+                                  </span>
+                                  <strong className={styles.detailHighlightValue}>
+                                    {item.value}
+                                  </strong>
+                                  <p className={styles.detailHighlightNote}>
+                                    {item.note}
+                                  </p>
+                                </article>
+                              ))}
+                            </div>
+                          ) : null}
+
+                          {tool.detailSections?.length ? (
+                            <div className={styles.detailSections}>
+                              {tool.detailSections.map((section) => (
+                                <section
+                                  key={`${tool.id}-${section.title}`}
+                                  className={styles.detailSectionBlock}
+                                >
+                                  <h3>{section.title}</h3>
+                                  {section.paragraphs?.map((paragraph) => (
+                                    <p key={paragraph}>{paragraph}</p>
+                                  ))}
+                                  {section.bullets?.length ? (
+                                    <ul className={styles.detailList}>
+                                      {section.bullets.map((item) => (
+                                        <li key={item}>{item}</li>
+                                      ))}
+                                    </ul>
+                                  ) : null}
+                                </section>
+                              ))}
+                            </div>
+                          ) : null}
+
+                          <h3>{isStyleTwo ? "适用场景" : "Best For"}</h3>
                           <ul className={styles.detailList}>
                             {tool.useCases.map((item) => (
                               <li key={item}>{item}</li>
                             ))}
                           </ul>
 
-                          <h3>Next</h3>
+                          <h3>{isStyleTwo ? "后续扩展" : "Next"}</h3>
                           <ul className={styles.detailList}>
                             {tool.roadmap.map((item) => (
                               <li key={item}>{item}</li>
@@ -367,6 +424,37 @@ export default function HomeShell({ siteConfig, tools }: HomeShellProps) {
                       </div>
 
                       <aside className={styles.detailSide}>
+                        {tool.detailTokens?.length ? (
+                          <div className={styles.tokenBoard}>
+                            <div className={styles.tokenBoardHead}>
+                              <span className={styles.statusLabel}>
+                                Design Tokens
+                              </span>
+                              <strong>关键令牌</strong>
+                            </div>
+                            <div className={styles.tokenList}>
+                              {tool.detailTokens.map((token) => (
+                                <article
+                                  key={`${tool.id}-${token.name}`}
+                                  className={styles.tokenCard}
+                                >
+                                  <div className={styles.tokenMeta}>
+                                    <span className={styles.tokenName}>
+                                      {token.name}
+                                    </span>
+                                    <code className={styles.tokenValue}>
+                                      {token.value}
+                                    </code>
+                                  </div>
+                                  <p className={styles.tokenUsage}>
+                                    {token.usage}
+                                  </p>
+                                </article>
+                              ))}
+                            </div>
+                          </div>
+                        ) : null}
+
                         {tool.images?.length ? (
                           <div className={styles.detailGallery}>
                             {tool.images.map((image) => (

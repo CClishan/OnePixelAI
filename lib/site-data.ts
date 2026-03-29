@@ -9,6 +9,24 @@ export type ToolImage = {
   label: string;
 };
 
+export type DetailSection = {
+  title: string;
+  paragraphs?: string[];
+  bullets?: string[];
+};
+
+export type DetailHighlight = {
+  label: string;
+  value: string;
+  note: string;
+};
+
+export type DetailToken = {
+  name: string;
+  value: string;
+  usage: string;
+};
+
 export type ToolItem = {
   id: string;
   name: string;
@@ -22,9 +40,13 @@ export type ToolItem = {
   actionLabel: string;
   availability: string;
   detailAvailability?: string;
+  detailStyle?: "default" | "style-2";
   detailText: string[];
   useCases: string[];
   roadmap: string[];
+  detailSections?: DetailSection[];
+  detailHighlights?: DetailHighlight[];
+  detailTokens?: DetailToken[];
   images?: ToolImage[];
 };
 
@@ -197,6 +219,130 @@ export const tools: ToolItem[] = [
     roadmap: [
       "后续可继续补充适合不同项目类型的 AGENTS.md 变体",
       "可与 OnePixelAI 现有 Skill 一起整理成更完整的提示词工具箱",
+    ],
+  },
+  {
+    id: "pixel-family-design-language",
+    name: "Pixel 家族设计语言（AI友好版）",
+    type: "skill",
+    status: "live",
+    description:
+      "把 PixelSmall / PixelTurn 这一套家族风格整理成 AI 读得懂的设计系统文档，方便后续同系列工具稳定复用。",
+    downloadHref: "/downloads/pixel-family-design-language.md",
+    tags: ["experience"],
+    typeLabel: "Experience",
+    actionLabel: "Download .md",
+    availability: "Available download now",
+    detailAvailability: "Available download now",
+    detailStyle: "style-2",
+    detailText: [
+      "这份文档把 Pixel 家族的设计语言从“感觉像”整理成“可执行规则”，让人和 AI 都能按同一套外壳继续做新工具，而不是每次重新摸索。",
+      "它重点不是讲品牌故事，而是沉淀可复用的产品骨架、视觉令牌、组件语义、禁忌项和 agent 执行规则，适合继续扩展图片、PDF 和批处理类轻工具。",
+    ],
+    useCases: [
+      "给同系列新工具建立稳定外壳，而不是每次重新设计",
+      "让 AI 在做 Pixel 家族页面时有明确的布局、组件和 token 依据",
+      "把设计决策从口头偏好沉淀成可维护的工程文档",
+    ],
+    roadmap: [
+      "继续补充新组件验证后的家族规则和落地案例",
+      "把未来新工具的共性模块继续回写进这份设计文档",
+    ],
+    detailHighlights: [
+      {
+        label: "文档角色",
+        value: "设计侧 AGENTS.md",
+        note: "不是展示稿，而是给人类和 agent 共读的家族设计契约。",
+      },
+      {
+        label: "适用范围",
+        value: "多工具共壳",
+        note: "覆盖图片压缩、格式转换、PDF 处理、批量导出等同系列轻工具。",
+      },
+      {
+        label: "视觉气质",
+        value: "精准 / 克制 / 稳定",
+        note: "明亮纸白、轻边框、柔阴影、少动效，优先可信和连续使用感。",
+      },
+      {
+        label: "核心价值",
+        value: "AI 可执行",
+        note: "把氛围、token、组件语义和禁忌项一起落成结构化文本。",
+      },
+    ],
+    detailSections: [
+      {
+        title: "文档定位",
+        paragraphs: [
+          "这份 DESIGN.md 被定义为设计侧的 AGENTS.md。它不负责讲营销故事，而是负责告诉后续的工具页面应该长什么样、哪些结构不能乱动、哪些模块可以替换。",
+          "当没有明确参考站时，这份文档优先于临时口头描述；当单个工具业务不同，也优先保持家族外壳稳定，只更换模块内容。",
+        ],
+      },
+      {
+        title: "核心结论",
+        bullets: [
+          "让 agent 读懂设计语言，不能只说“做得像 PixelTurn 一点”。",
+          "Figma 对人类够用，但对 agent 不够直接，必须把颜色、字号、圆角和组件语义写成文本。",
+          "这是一份活文档，家族视觉进化时需要一起更新。",
+          "既要写氛围，也要写 token、层级、结构和禁忌项。",
+        ],
+      },
+      {
+        title: "稳定骨架",
+        bullets: [
+          "桌面端固定三段：Header、Left Workspace、Right Configuration。",
+          "内部默认走 12 栏网格，左侧工作区更宽，右侧配置区更稳。",
+          "移动端不是缩小桌面版，而是改成 Header、Dropzone、信息卡、Queue、Configuration、底部悬浮操作栏的阅读顺序。",
+        ],
+      },
+      {
+        title: "视觉氛围与禁忌",
+        bullets: [
+          "主基调是明亮、偏纸白、中高对比，但不做纯黑纯白硬碰硬。",
+          "情绪应该冷静、专业、像被长期维护的浏览器轻工具家族。",
+          "禁止炫彩渐变主视觉、暗黑霓虹、大面积玻璃拟态、卡片套卡片和过多 hover 特效。",
+        ],
+      },
+      {
+        title: "组件与 Agent 规则",
+        bullets: [
+          "Header、LocaleSwitch、Dropzone、QueueList、SettingsPanel、SegmentedControl、RangeControl 和 MobileFabBar 都属于家族级稳定资产。",
+          "先保骨架，再换业务；先复用现有组件，再谈新的视觉语言。",
+          "移动端必须单独检查，中英双语也必须同时成立。",
+        ],
+      },
+    ],
+    detailTokens: [
+      {
+        name: "App Background",
+        value: "#FDFDFD",
+        usage: "页面总背景，保持纸白和轻工具气质。",
+      },
+      {
+        name: "Panel Background",
+        value: "rgba(255,255,255,0.96)",
+        usage: "主卡片、配置卡和队列卡的基础表面。",
+      },
+      {
+        name: "Border Default",
+        value: "#E5E5E5",
+        usage: "主边框与模块分隔，轻但有结构。",
+      },
+      {
+        name: "Text Primary",
+        value: "#1D1D1F",
+        usage: "主标题和主信息内容。",
+      },
+      {
+        name: "Accent Ink",
+        value: "#171717",
+        usage: "激活态、主按钮、当前选中项。",
+      },
+      {
+        name: "Success",
+        value: "#238057",
+        usage: "只用于真实成功信息，不参与装饰。",
+      },
     ],
   },
   {
