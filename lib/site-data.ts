@@ -104,13 +104,6 @@ export const tools: ToolItem[] = [
       "补充更多输出格式与批量处理能力",
       "继续打磨队列反馈和处理状态可视化",
     ],
-    images: [
-      {
-        src: "/previews/pixelturn.jpeg",
-        alt: "PixelTurn screenshot",
-        label: "Live screenshot",
-      },
-    ],
   },
   {
     id: "pixelsmall",
@@ -135,13 +128,6 @@ export const tools: ToolItem[] = [
     roadmap: [
       "补充更明确的压缩强度提示",
       "探索压缩前后对比与批量导出体验",
-    ],
-    images: [
-      {
-        src: "/previews/pixelsmall.jpeg",
-        alt: "PixelSmall screenshot",
-        label: "Live screenshot",
-      },
     ],
   },
   {
@@ -192,6 +178,31 @@ export const tools: ToolItem[] = [
     roadmap: [
       "继续补充更多资源识别和批量处理能力",
       "优化下载队列、结果管理和导出体验",
+    ],
+  },
+  {
+    id: "pixelkb",
+    name: "pixelKB",
+    type: "tool",
+    status: "live",
+    description: "知识库工具项目，用更轻的方式整理、沉淀和调用个人内容资产。",
+    href: "https://github.com/CClishan/pixelKB",
+    tags: ["tool"],
+    typeLabel: "Tool",
+    actionLabel: "Open",
+    availability: "Available now",
+    detailText: [
+      "pixelKB 面向个人知识整理和内容资产沉淀场景，把分散的信息、资料和记录收拢成更容易查找与复用的工具形态。",
+      "它适合继续扩展 OnePixelAI 在轻工具之外的内容管理方向，让知识整理也保持同样直接、清爽的使用感。",
+    ],
+    useCases: [
+      "整理个人资料、笔记和常用内容片段",
+      "把零散信息沉淀成更可检索、更可复用的知识资产",
+      "为后续内容生产或 AI 使用准备结构化素材",
+    ],
+    roadmap: [
+      "继续补充知识组织、检索和调用体验",
+      "探索与现有工具体系联动的内容工作流",
     ],
   },
   {
